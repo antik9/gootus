@@ -1,4 +1,4 @@
-module github.com/antik9/gootus/printtime
+module github.com/antik9/gootus/printntp
 
 go 1.12
 
