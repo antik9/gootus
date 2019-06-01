@@ -48,14 +48,11 @@ func (shortener LinkShortener) Shorten(url string) string {
 }
 
 func (shortener LinkShortener) Resolve(url string) string {
-	if len(url) != len(prefix)+linkLength {
+	if len(url) <= len(prefix) {
 		return ""
 	} else {
 		hash := url[len(prefix):]
-		if fullUrl, ok := shortener.linksReverseMap[hash]; ok {
-			return fullUrl
-		} else {
-			return ""
-		}
+		fullUrl, _ := shortener.linksReverseMap[hash]
+		return fullUrl
 	}
 }
