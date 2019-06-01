@@ -20,7 +20,7 @@ type LinkShortener struct {
 	linksReverseMap map[string]string
 }
 
-func NewLinkShortner() LinkShortener {
+func NewLinkShortener() LinkShortener {
 	return LinkShortener{map[string]string{}, map[string]string{}}
 }
 
