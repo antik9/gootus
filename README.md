@@ -2,20 +2,22 @@
 
 ### Get a repo
 ```bash
->>> go get -u github.com/antik9/gootus:shortener
+>>> go get -u github.com/antik9/gootus@shortener
 ```
 
 ### Usage
 
 ```go
+package main
+
 import (
     "fmt"
-    "shortener"
+    "github.com/antik9/gootus"
 )
 
 
 func main() {
-    worker := shortner.LinkShortener{map[string]string{}, map[string]string{}}
-    fmt.Println(worker.Shorten("https://google.com")
+    worker := shortener.NewLinkShortener()
+    fmt.Println(worker.Shorten("https://google.com"))
 }
 ```

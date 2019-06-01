@@ -20,6 +20,10 @@ type LinkShortener struct {
 	linksReverseMap map[string]string
 }
 
+func NewLinkShortner() LinkShortener {
+	return LinkShortener{map[string]string{}, map[string]string{}}
+}
+
 func randomString(length int) string {
 	bytes := make([]byte, length)
 	for i := 0; i < length; i++ {
