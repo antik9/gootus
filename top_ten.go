@@ -21,18 +21,22 @@ func TopTen(text string) []string {
 
 	occurences := make([]wordOccurence, len(counter))
 	topTen := make([]string, 0)
-	i := 0
+	idx, limit := 0, 10
 
 	for key, value := range counter {
-		occurences[i] = wordOccurence{key, value}
-		i++
+		occurences[idx] = wordOccurence{key, value}
+		idx++
+	}
+
+	if idx < 10 {
+		limit = idx
 	}
 
 	sort.Slice(occurences, func(i, j int) bool {
 		return occurences[i].count > occurences[j].count
 	})
 
-	for _, occurence := range occurences[:10] {
+	for _, occurence := range occurences[:limit] {
 		topTen = append(topTen, occurence.word)
 	}
 
