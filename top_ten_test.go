@@ -1,4 +1,4 @@
-package top_ten
+package topten
 
 import (
 	"testing"
