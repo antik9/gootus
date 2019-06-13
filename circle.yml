@@ -1,7 +1,7 @@
 # Golang CircleCI 2.0 configuration file
 version: 2
 jobs:
-  build_and_test:
+  test:
     branches:
       only:
         - top-ten
@@ -12,5 +12,6 @@ jobs:
 
 workflows:
   version: 2
-  jobs:
-    - build_and_test
+  build_and_test:
+    jobs:
+      - test
