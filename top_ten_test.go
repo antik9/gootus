@@ -31,3 +31,15 @@ func TestTopTen(t *testing.T) {
 		}
 	}
 }
+
+func TestTopThree(t *testing.T) {
+	got := TopN(`
+		one, one, two, two, three, four, four.!!! four??? one())()(two---four__two==four`, 3)
+	reference := [...]string{"four", "two", "one"}
+
+	for i, _ := range make([]int, 3) {
+		if got[i] != reference[i] {
+			t.Errorf("get[%d] = %s; want %s", i, got[i], reference[i])
+		}
+	}
+}

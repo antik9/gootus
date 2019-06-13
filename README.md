@@ -20,5 +20,9 @@ func main() {
     for _, word := range topten.TopTen("one one two") {
         fmt.Println(word)
     }
+
+    for _, word := range topten.TopN("one one two", 1) {
+        fmt.Println(word)
+    }
 }
 ```
