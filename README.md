@@ -13,19 +13,20 @@ package main
 
 import (
 	"fmt"
+	"github.com/antik9/gootus"
 )
 
 func main() {
-	list := NewList()
+	newList := list.NewList()
 
-	list.PushBack(10)
-	list.PushFront(5)
-	list.PushFront(4)
+	newList.PushBack(10)
+	newList.PushFront(5)
+	newList.PushFront(4)
 
-	list.First().Remove()
+	newList.First().Remove()
 
-	fmt.Println(list.Len())
-	fmt.Println(list.First().Value())
-	fmt.Println(list.Last().Value())
+	fmt.Println(newList.Len())
+	fmt.Println(newList.First().Value())
+	fmt.Println(newList.Last().Value())
 }
 ```
