@@ -1,0 +1,19 @@
+# Golang CircleCI 2.0 configuration file
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout
+      - run: go test -v
+
+workflows:
+  version: 2
+  test_app:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - log-events
