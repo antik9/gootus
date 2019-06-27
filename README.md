@@ -2,7 +2,7 @@
 
 ### Get a Repo
 ```bash
->>> go get -u github.com/antik9/gootus@log-events
+>>> go get -u github.com/antik9/gootus@parallel
 ```
 
 ### Usage
