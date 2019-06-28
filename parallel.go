@@ -16,44 +16,32 @@ type Launcher struct {
 	sync.Mutex
 	launched int
 	done     bool
+	tasks    chan func() error
+	result   chan error
 }
 
-func (e *Executor) awaitLaunchedTasks(launcher *Launcher, out <-chan error) {
-	launcher.Lock()
-	launcher.done = true
-	launcher.Unlock()
-
-	for i := 0; i < launcher.launched-e.processed; {
-		if _, ok := <-out; ok {
-			i++
-		}
-	}
-}
-
-func (l *Launcher) launchTasks(fs []func() error, in chan<- func() error) {
+func (l *Launcher) launchTasks(fs []func() error) {
 	for _, f := range fs {
 		l.Lock()
 		if l.done {
-			close(in)
 			l.Unlock()
+			close(l.tasks)
 			break
 		} else {
 			l.launched++
 			l.Unlock()
-			in <- f
+			l.tasks <- f
 		}
 	}
 }
 
-func (l *Launcher) launchWorkers(
-	workers int, processed *int, in <-chan func() error, out chan<- error) {
-
+func (l *Launcher) launchWorkers(workers int, processed *int) {
 	workersAreDone := false
 	for i := 0; i < workers; i++ {
 		go func() {
 			for {
 				closeOnThisLoop := false
-				if f, ok := <-in; ok {
+				if f, ok := <-l.tasks; ok {
 					result := f()
 					l.Lock()
 					if l.done && l.launched-*processed == 0 && !workersAreDone {
@@ -61,9 +49,9 @@ func (l *Launcher) launchWorkers(
 						workersAreDone = true
 					}
 					l.Unlock()
-					out <- result
+					l.result <- result
 					if closeOnThisLoop {
-						close(out)
+						close(l.result)
 					}
 				} else {
 					break
@@ -82,9 +70,15 @@ func NewExecutor(maxWorkers, maxErrors int) (*Executor, error) {
 		maxWorkers: maxWorkers}, nil
 }
 
-func (e *Executor) processErrors(awaitedNumber int, out <-chan error) {
+func NewLauncher() *Launcher {
+	return &Launcher{
+		tasks:  make(chan func() error),
+		result: make(chan error)}
+}
+
+func (e *Executor) processErrors(awaitedNumber int, launcher *Launcher) {
 	for e.processed < awaitedNumber {
-		if err, ok := <-out; !ok {
+		if err, ok := <-launcher.result; !ok {
 			continue
 		} else if err != nil {
 			e.errorCounter++
@@ -98,13 +92,27 @@ func (e *Executor) processErrors(awaitedNumber int, out <-chan error) {
 }
 
 func (e *Executor) RunTasks(fs []func() error) {
-	in := make(chan func() error, 1)
-	out := make(chan error, 1)
-	launcher := Launcher{}
+	launcher := NewLauncher()
 
-	go launcher.launchWorkers(e.maxWorkers, &e.processed, in, out)
-	go launcher.launchTasks(fs, in)
+	go launcher.launchWorkers(e.maxWorkers, &e.processed)
+	go launcher.launchTasks(fs)
 
-	e.processErrors(len(fs), out)
-	e.awaitLaunchedTasks(&launcher, out)
+	e.processErrors(len(fs), launcher)
+	e.stopLauncher(launcher)
+}
+
+func (l *Launcher) stop() {
+	l.Lock()
+	l.done = true
+	l.Unlock()
+}
+
+func (e *Executor) stopLauncher(launcher *Launcher) {
+	launcher.stop()
+
+	for i := 0; i < launcher.launched-e.processed; {
+		if _, ok := <-launcher.result; ok {
+			i++
+		}
+	}
 }
