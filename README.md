@@ -2,12 +2,13 @@
 
 ### Get a Repo
 ```bash
->>> go get -u github.com/antik9/gootus@cli
+>>> git clone -b cli https://github.com/antik9/gootus
 ```
 
 ### Build the tool
 ```bash
->>> go install gootus
+>>> cd gootus
+>>> go install gootus -mod vendor
 ```
 
 ### Run gootus
