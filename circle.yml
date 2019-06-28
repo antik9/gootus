@@ -6,6 +6,7 @@ jobs:
       - image: circleci/golang:1.12
     steps:
       - checkout
+      - run: export GOPATH=$PWD
       - run: go test topten -v
       - run: go test unpacker -v
 
