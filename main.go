@@ -2,20 +2,13 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"topten"
 	"unpacker"
 )
-
-func help() {
-	fmt.Println(`Provide one of the commands:
-	gootus unpack # Unpacks string like u3i9
-	gootus top 5  # find top 5 occurences from the provided line`)
-	os.Exit(1)
-}
 
 func unpack() {
 	var input string
@@ -35,20 +28,15 @@ func printTopN(n int) {
 }
 
 func main() {
-	if len(os.Args) < 2 || (os.Args[1] != "unpack" && os.Args[1] != "top") {
-		help()
-	}
+	runUnpack := flag.Bool("unpack", false, "gootus -unpack # Unpacks string like u3i9")
+	topN := flag.Int("top", 0, "gootus -top 5  # find top 5 occurences from the provided line")
+	flag.Parse()
 
-	if os.Args[1] == "unpack" {
+	if *runUnpack {
 		unpack()
+	} else if *topN > 0 {
+		printTopN(*topN)
 	} else {
-		if len(os.Args) != 3 {
-			help()
-		}
-		if n, err := strconv.Atoi(os.Args[2]); err != nil || n < 0 {
-			help()
-		} else {
-			printTopN(n)
-		}
+		flag.PrintDefaults()
 	}
 }
