@@ -5,14 +5,9 @@
 >>> go get -u github.com/antik9/gootus@dd
 ```
 
-### Test the tool
+### Installation
 ```bash
->>> go test gootus
-```
-
-### Build the tool
-```bash
->>> go install gootus
+>>> go install github.com/antik9/gootus
 ```
 
 ### Run gootus
