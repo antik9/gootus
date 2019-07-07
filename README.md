@@ -5,11 +5,6 @@
 >>> go get -u github.com/antik9/gootus@dd
 ```
 
-### Installation
-```bash
->>> go install github.com/antik9/gootus
-```
-
 ### Run gootus
 
 ```bash
