@@ -18,7 +18,6 @@ const (
 
 // Copy from src to dest from offset limit bytes
 func Copy(src, dest string, offset, limit int64) {
-	fmt.Println(src, dest, offset, limit)
 	sizeOfSrc := sizeOf(src)
 
 	if sizeOfSrc < offset {
