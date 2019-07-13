@@ -2,7 +2,7 @@
 
 ### Get a Repo
 ```bash
->>> go get -u github.com/antik9/gootus@getenv
+>>> go get -u github.com/antik9/gootus@envdir
 ```
 
 ### Run gootus
