@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -49,8 +50,9 @@ func exportEnvFromFile(filename string) {
 }
 
 func help() {
-	log.Fatalln(`Usage:
-gootus <env_dir> <command> ...args`)
+	fmt.Println(`Usage:
+	gootus <env_dir> <command> ...args`)
+	os.Exit(0)
 }
 
 func execute(command string, args ...string) {
