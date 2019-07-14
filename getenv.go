@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -10,9 +11,12 @@ import (
 )
 
 func checkDir(directory string) {
-	if src, err := os.Stat(directory); err != nil {
+	src, err := os.Stat(directory)
+	if err != nil {
 		log.Fatalln(err.Error())
-	} else if !src.IsDir() {
+	}
+
+	if !src.IsDir() {
 		log.Fatalf("%s is not a directory", directory)
 	}
 }
@@ -20,33 +24,31 @@ func checkDir(directory string) {
 func exportEnvFromDir(directory string) {
 	checkDir(directory)
 
-	if src, err := os.Open(directory); err != nil {
+	src, err := os.Open(directory)
+	if err != nil {
 		log.Fatalln(err.Error())
-	} else {
-		defer src.Close()
-		if fileSlice, err := src.Readdirnames(0); err != nil {
-			log.Fatalln(err.Error())
-		} else {
-			for _, filename := range fileSlice {
-				exportEnvFromFile(filepath.Join(src.Name(), filename))
-			}
-		}
+	}
+	defer src.Close()
+
+	fileSlice, err := src.Readdirnames(0)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	for _, filename := range fileSlice {
+		exportEnvFromFile(filepath.Join(src.Name(), filename))
 	}
 }
 
 func exportEnvFromFile(filename string) {
 	envName := filepath.Base(filename)
-	if src, err := os.Open(filename); err != nil {
+
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
 		log.Fatalln(err.Error())
-	} else {
-		defer src.Close()
-		buf := make([]byte, 1024)
-		if _, err := src.Read(buf); err != nil {
-			log.Fatalln(err.Error())
-		} else {
-			os.Setenv(envName, strings.Trim(string(buf), " \n\t\r\b\x00"))
-		}
 	}
+
+	os.Setenv(envName, strings.Trim(string(content), " \n\t\r\b\x00"))
 }
 
 func help() {
@@ -61,9 +63,7 @@ func execute(command string, args ...string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	if err := cmd.Start(); err != nil {
+	if err := cmd.Run(); err != nil {
 		log.Fatalln(err.Error())
-	} else {
-		cmd.Wait()
 	}
 }

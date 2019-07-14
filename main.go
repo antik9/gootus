@@ -1,3 +1,5 @@
+// Utility to run command with exported environment variables from
+// all files in given directory
 package main
 
 import (
